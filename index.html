@@ -133,5 +133,42 @@
     <script src="js/particles.min.js"></script>
     <script src="js/particle-settings.js"></script>
     <script src="js/main.js"></script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('mc-form');
+        const messageLabel = document.querySelector('.subscribe-message');
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('mc-email').value;
+            const formData = new FormData();
+            formData.append('EMAIL', email);
+            
+            // Mostrar mensaje de carga
+            messageLabel.textContent = 'Enviando...';
+            
+            fetch('send-email.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Mostrar mensaje de éxito o error
+                messageLabel.textContent = data.message;
+                messageLabel.className = 'subscribe-message ' + (data.success ? 'success' : 'error');
+                
+                // Limpiar el formulario si fue exitoso
+                if (data.success) {
+                    form.reset();
+                }
+            })
+            .catch(error => {
+                messageLabel.textContent = 'Error al enviar el formulario. Por favor, inténtalo de nuevo.';
+                messageLabel.className = 'subscribe-message error';
+                console.error('Error:', error);
+            });
+        });
+    });
+    </script>
 
 </body>

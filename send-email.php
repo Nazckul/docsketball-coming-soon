@@ -1,29 +1,40 @@
 <?php
+// Configuración
+$destinatario = "tu_email@example.com"; // Reemplaza con tu dirección de email
+$asunto = "Nueva suscripción a novedades de Docsketball";
+
+// Verificar si se envió el formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['EMAIL'];
-
-    // Validar el correo
-    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        // Configurar el correo
-        $to = "stefanocopreni@hotmail.com";  // Cambia esto por tu correo
-        $subject = "Nuevo Suscriptor - Notificación";
-        $message = "Se ha suscrito un nuevo usuario con el siguiente correo: " . $email;
-        $headers = "From: no-reply@tudominio.com" . "\r\n" .
-                   "Reply-To: no-reply@tudominio.com" . "\r\n" .
-                   "Content-Type: text/html; charset=UTF-8";
-
-        // Enviar el correo
-        if (mail($to, $subject, $message, $headers)) {
-            echo "Gracias por suscribirte!";
-        } else {
-            echo "Hubo un problema al enviar tu suscripción. Intenta de nuevo.";
-        }
+    // Obtener la dirección de email del formulario y sanitizarla
+    $email = filter_var($_POST["EMAIL"], FILTER_SANITIZE_EMAIL);
+    
+    // Verificar que el email sea válido
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(["success" => false, "message" => "Por favor, ingresa un email válido."]);
+        exit;
+    }
+    
+    // Preparar el contenido del email
+    $mensaje = "Se ha registrado una nueva suscripción a las novedades de Docsketball.\n\n";
+    $mensaje .= "Email del suscriptor: " . $email . "\n";
+    $mensaje .= "Fecha y hora: " . date("d/m/Y H:i:s") . "\n";
+    
+    // Cabeceras del email
+    $cabeceras = "From: Formulario Docsketball <no-reply@tudominio.com>\r\n";
+    $cabeceras .= "Reply-To: " . $email . "\r\n";
+    $cabeceras .= "X-Mailer: PHP/" . phpversion();
+    
+    // Enviar el email
+    $enviado = mail($destinatario, $asunto, $mensaje, $cabeceras);
+    
+    // Responder con JSON para procesamiento AJAX
+    if ($enviado) {
+        echo json_encode(["success" => true, "message" => "¡Gracias por suscribirte! Te mantendremos informado sobre las novedades."]);
     } else {
-        echo "Por favor, ingresa un correo válido.";
+        echo json_encode(["success" => false, "message" => "Hubo un problema al enviar tu suscripción. Por favor, inténtalo más tarde."]);
     }
 } else {
-    // Redirigir si alguien accede al script directamente
-    header("Location: index.html");
-    exit();
+    // Si se accede directamente al archivo sin enviar el formulario
+    echo json_encode(["success" => false, "message" => "Acceso no válido."]);
 }
 ?>

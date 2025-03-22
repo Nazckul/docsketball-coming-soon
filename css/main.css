@@ -2911,3 +2911,15 @@ html.no-csstransitions .intro-content__bottom {
 }
 
 /*# sourceMappingURL=main.css.map */
+
+
+/* CUSTOM */
+.subscribe-message.success {
+  color: green;
+  font-weight: bold;
+}
+
+.subscribe-message.error {
+  color: red;
+  font-weight: bold;
+}
