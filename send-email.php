@@ -1,6 +1,6 @@
 <?php
 // Configuración
-$destinatario = "tu_email@example.com"; // Reemplaza con tu dirección de email
+$destinatario = "stefanocopreni@hotmail.com"; // Reemplaza con tu dirección de email
 $asunto = "Nueva suscripción a novedades de Docsketball";
 
 // Verificar si se envió el formulario
@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $mensaje .= "Fecha y hora: " . date("d/m/Y H:i:s") . "\n";
     
     // Cabeceras del email
-    $cabeceras = "From: Formulario Docsketball <no-reply@tudominio.com>\r\n";
+    $cabeceras = "From: Formulario Docsketball <no-reply@docsketball.com>\r\n";
     $cabeceras .= "Reply-To: " . $email . "\r\n";
     $cabeceras .= "X-Mailer: PHP/" . phpversion();
     
